@@ -2,8 +2,9 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, Fuel, Car, Settings, ChevronsUpDown, LogOut } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 import {
   Sidebar,
   SidebarContent,
@@ -31,11 +32,12 @@ const navItems = [
   { href: "/dashboard", label: "Painel", icon: LayoutDashboard },
   { href: "/history", label: "Abastecimentos", icon: Fuel },
   { href: "/vehicles", label: "Veículos", icon: Car },
-  { href: "/configuracao", label: "Configurações", icon: Settings },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const supabase = createClient();
   const selectedVehicleId = useAppStore((s) => s.selectedVehicleId);
   const defaultVehicleId = useAppStore((s) => s.defaultVehicleId);
   const setSelectedVehicleId = useAppStore((s) => s.setSelectedVehicleId);
@@ -124,7 +126,13 @@ export function AppSidebar() {
                   Configurações
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem disabled>
+                <DropdownMenuItem
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    router.push("/login");
+                    router.refresh();
+                  }}
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   Sair
                 </DropdownMenuItem>

@@ -33,6 +33,7 @@ interface VehicleDialogProps {
 export function VehicleDialog({ open, onOpenChange, vehicle }: VehicleDialogProps) {
   const addVehicle = useAppStore((s) => s.addVehicle);
   const updateVehicle = useAppStore((s) => s.updateVehicle);
+  const userId = useAppStore((s) => s.userId);
 
   const form = useForm<VehicleFormValues>({
     resolver: zodResolver(vehicleSchema),
@@ -57,11 +58,12 @@ export function VehicleDialog({ open, onOpenChange, vehicle }: VehicleDialogProp
     }
   }, [vehicle, form, open]);
 
-  function onSubmit(values: VehicleFormValues) {
+  async function onSubmit(values: VehicleFormValues) {
+    if (!userId) return;
     if (vehicle) {
-      updateVehicle(vehicle.id, values);
+      await updateVehicle(vehicle.id, values);
     } else {
-      addVehicle(values);
+      await addVehicle(values, userId);
     }
     onOpenChange(false);
   }

@@ -2,10 +2,13 @@
 
 import { useAppStore } from "@/lib/store";
 import { useSelectedVehicle } from "@/hooks/useSelectedVehicle";
-import { getDashboardStats } from "@/lib/calculations";
+import { getDashboardStats, getLastKmLPoints, getMonthlyExpenses } from "@/lib/calculations";
 import { formatKmL } from "@/lib/utils";
 import { KpiCard } from "./KpiCard";
+import { KmLChart } from "./KmLChart";
+import { MonthlyExpenseChart } from "./MonthlyExpenseChart";
 import Link from "next/link";
+import { TrendingUp, TrendingDown, Gauge, BarChart2 } from "lucide-react";
 
 export function DashboardStats() {
   const fillups = useAppStore((s) => s.fillups);
@@ -14,6 +17,8 @@ export function DashboardStats() {
 
   const stats = selectedVehicleId ? getDashboardStats(fillups, selectedVehicleId) : null;
   const hasData = stats && (stats.lastKmL !== null || stats.bestKmL !== null);
+  const kmLPoints = selectedVehicleId ? getLastKmLPoints(fillups, selectedVehicleId, 7) : [];
+  const monthlyExpenses = selectedVehicleId ? getMonthlyExpenses(fillups, selectedVehicleId, 7) : [];
 
   const fmt = (v: number | null) => formatKmL(v, decimalSeparator);
 
@@ -43,31 +48,48 @@ export function DashboardStats() {
       )}
 
       {selectedVehicle && (
-        <div>
-          <h2 className="text-lg font-semibold mb-4">{selectedVehicle.nickname}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard
-              title="Último km/l"
-              value={fmt(stats?.lastKmL ?? null)}
-              description="Abastecimento mais recente"
-            />
-            <KpiCard
-              title="Melhor km/l"
-              value={fmt(stats?.bestKmL ?? null)}
-              description="Maior eficiência registrada"
-            />
-            <KpiCard
-              title="Pior km/l"
-              value={fmt(stats?.worstKmL ?? null)}
-              description="Menor eficiência registrada"
-            />
-            <KpiCard
-              title="Média km/l"
-              value={fmt(stats?.averageKmL ?? null)}
-              description="Média histórica"
-            />
+        <>
+          <div>
+            <h2 className="text-lg font-semibold mb-4">{selectedVehicle.nickname}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <KpiCard
+                title="Último km/l"
+                value={fmt(stats?.lastKmL ?? null)}
+                description="Abastecimento mais recente"
+                icon={Gauge}
+                accent="default"
+              />
+              <KpiCard
+                title="Melhor km/l"
+                value={fmt(stats?.bestKmL ?? null)}
+                description="Maior eficiência registrada"
+                icon={TrendingUp}
+                accent="green"
+              />
+              <KpiCard
+                title="Pior km/l"
+                value={fmt(stats?.worstKmL ?? null)}
+                description="Menor eficiência registrada"
+                icon={TrendingDown}
+                accent="red"
+              />
+              <KpiCard
+                title="Média km/l"
+                value={fmt(stats?.averageKmL ?? null)}
+                description="Média histórica"
+                icon={BarChart2}
+                accent="yellow"
+              />
+            </div>
           </div>
-        </div>
+
+          {(kmLPoints.length >= 2 || monthlyExpenses.length > 0) && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <KmLChart data={kmLPoints} decimalSeparator={decimalSeparator} />
+              <MonthlyExpenseChart data={monthlyExpenses} decimalSeparator={decimalSeparator} />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

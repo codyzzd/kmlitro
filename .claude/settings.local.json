@@ -8,7 +8,13 @@
       "Bash(npx shadcn@latest add form --yes)",
       "Bash(kill %1)",
       "Bash(git remote:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(ls \"/Users/codyzzd/Documents/dev/kmlitro_claude/src/app/\\(app\\)/\")",
+      "Bash(APPDIR=\"/Users/codyzzd/Documents/dev/kmlitro_claude/src/app/\\(app\\)\")",
+      "Bash(SRCDIR=\"/Users/codyzzd/Documents/dev/kmlitro_claude/src/app\")",
+      "Bash(cp -r \"$SRCDIR/dashboard\" \"$APPDIR/dashboard\")",
+      "Bash(cp -r \"$SRCDIR/history\" \"$APPDIR/history\")",
+      "Bash(cp -r \"$SRCDIR/vehicles\" \"$APPDIR/vehicles\")"
     ]
   }
 }

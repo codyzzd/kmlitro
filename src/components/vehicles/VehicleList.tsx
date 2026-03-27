@@ -33,6 +33,7 @@ export function VehicleList() {
   const defaultVehicleId = useAppStore((s) => s.defaultVehicleId);
   const setDefaultVehicleId = useAppStore((s) => s.setDefaultVehicleId);
   const decimalSeparator = useAppStore((s) => s.settings.decimalSeparator);
+  const userId = useAppStore((s) => s.userId);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -55,7 +56,8 @@ export function VehicleList() {
   }
 
   function handleSetDefault(vehicle: Vehicle) {
-    setDefaultVehicleId(defaultVehicleId === vehicle.id ? null : vehicle.id);
+    if (!userId) return;
+    setDefaultVehicleId(defaultVehicleId === vehicle.id ? null : vehicle.id, userId);
   }
 
   return (
@@ -181,10 +183,8 @@ export function VehicleList() {
                       </div>
 
                       <DropdownMenu>
-                        <DropdownMenuTrigger className="shrink-0">
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
+                        <DropdownMenuTrigger render={<Button variant="ghost" size="icon" />}>
+                          <MoreHorizontal className="h-4 w-4" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => handleEdit(vehicle)}>

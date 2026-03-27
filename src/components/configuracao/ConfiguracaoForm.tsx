@@ -41,6 +41,8 @@ export function ConfiguracaoForm() {
   const { theme, setTheme } = useTheme();
   const settings = useAppStore((s) => s.settings);
   const updateSettings = useAppStore((s) => s.updateSettings);
+  const userId = useAppStore((s) => s.userId);
+  const authEmail = settings.userEmail;
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
@@ -48,20 +50,25 @@ export function ConfiguracaoForm() {
       decimalSeparator: settings.decimalSeparator,
       colorTheme: settings.colorTheme,
       userName: settings.userName,
-      userEmail: settings.userEmail,
     },
   });
 
-  // Sincroniza o tema do next-themes com o store na montagem
+  // Atualiza o formulário quando o store carrega os dados do Supabase
   useEffect(() => {
+    form.reset({
+      decimalSeparator: settings.decimalSeparator,
+      colorTheme: settings.colorTheme,
+      userName: settings.userName,
+    });
     if (settings.colorTheme && theme !== settings.colorTheme) {
       setTheme(settings.colorTheme);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [settings.decimalSeparator, settings.colorTheme, settings.userName]);
 
-  function onSubmit(values: SettingsFormValues) {
-    updateSettings(values);
+  async function onSubmit(values: SettingsFormValues) {
+    if (!userId) return;
+    await updateSettings(values, userId);
     setTheme(values.colorTheme);
   }
 
@@ -74,7 +81,7 @@ export function ConfiguracaoForm() {
           <div>
             <h2 className="text-base font-semibold">Perfil</h2>
             <p className="text-sm text-muted-foreground">
-              Seu nome e e-mail aparecem na barra lateral.
+              Seu nome aparece na barra lateral.
             </p>
           </div>
 
@@ -92,19 +99,18 @@ export function ConfiguracaoForm() {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="userEmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>E-mail</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder="seu@email.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-2">
+            <FormLabel>E-mail</FormLabel>
+            <Input
+              type="email"
+              value={authEmail}
+              disabled
+              className="bg-muted text-muted-foreground"
+            />
+            <p className="text-xs text-muted-foreground">
+              O e-mail é definido pelo seu cadastro e não pode ser alterado aqui.
+            </p>
+          </div>
         </div>
 
         <Separator />

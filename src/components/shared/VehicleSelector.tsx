@@ -22,10 +22,19 @@ export function VehicleSelector({
 }: VehicleSelectorProps) {
   const vehicles = useAppStore((s) => s.vehicles);
 
+  const selected = vehicles.find((v) => v.id === value);
+  const displayLabel = selected
+    ? `${selected.nickname} — ${selected.brand}${selected.model ? ` ${selected.model}` : ""} ${selected.year}`
+    : null;
+
   return (
     <Select value={value ?? ""} onValueChange={(v) => v && onChange(v)}>
       <SelectTrigger>
-        <SelectValue placeholder={placeholder} />
+        {displayLabel ? (
+          <span className="flex flex-1 text-left text-sm truncate">{displayLabel}</span>
+        ) : (
+          <SelectValue placeholder={placeholder} />
+        )}
       </SelectTrigger>
       <SelectContent>
         {vehicles.length === 0 ? (

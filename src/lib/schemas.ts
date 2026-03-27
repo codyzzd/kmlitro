@@ -31,7 +31,6 @@ export const settingsSchema = z.object({
   decimalSeparator: z.enum([",", "."]),
   colorTheme: z.enum(["system", "light", "dark"]),
   userName: z.string(),
-  userEmail: z.string(),
 });
 
 export type SettingsFormValues = z.infer<typeof settingsSchema>;

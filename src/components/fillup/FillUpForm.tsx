@@ -42,6 +42,7 @@ export function FillUpForm({ onSuccess }: FillUpFormProps = {}) {
   const addFillUp = useAppStore((s) => s.addFillUp);
   const fillups = useAppStore((s) => s.fillups);
   const decimalSeparator = useAppStore((s) => s.settings.decimalSeparator);
+  const userId = useAppStore((s) => s.userId);
   const sep = decimalSeparator;
 
   const { selectedVehicle, selectedVehicleId } = useSelectedVehicle();
@@ -93,9 +94,9 @@ export function FillUpForm({ onSuccess }: FillUpFormProps = {}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [liters, pricePerLiter, totalPaid]);
 
-  function onSubmit(values: FillUpFormValues) {
-    if (!selectedVehicleId) return;
-    addFillUp({
+  async function onSubmit(values: FillUpFormValues) {
+    if (!selectedVehicleId || !userId) return;
+    await addFillUp({
       vehicleId: selectedVehicleId,
       date: new Date(values.date).toISOString(),
       noData: values.noData,
@@ -106,7 +107,7 @@ export function FillUpForm({ onSuccess }: FillUpFormProps = {}) {
       fuelType: values.fuelType,
       fullTank: values.noData ? false : values.fullTank,
       notes: values.notes,
-    });
+    }, userId);
     if (onSuccess) {
       onSuccess();
     } else {

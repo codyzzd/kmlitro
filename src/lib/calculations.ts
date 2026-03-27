@@ -55,6 +55,62 @@ export function getLastOdometer(fillups: FillUp[], vehicleId: string): number | 
   return recent.length > 0 ? recent[0].odometer : null;
 }
 
+export interface KmLChartPoint {
+  label: string; // ex: "Abast. 1"
+  kmL: number;
+}
+
+export interface MonthlyExpensePoint {
+  label: string; // ex: "Set/24"
+  total: number;
+}
+
+/**
+ * Retorna os últimos N pontos de km/l calculados (para chart de linha).
+ */
+export function getLastKmLPoints(fillups: FillUp[], vehicleId: string, count = 7): KmLChartPoint[] {
+  const eligible = getEligibleFillUps(fillups, vehicleId);
+  if (eligible.length < 2) return [];
+
+  const points: KmLChartPoint[] = [];
+  for (let i = 1; i < eligible.length; i++) {
+    const kmL = calculateKmPerLiter(eligible[i], eligible[i - 1]);
+    if (kmL !== null) {
+      points.push({
+        label: `Abast. ${i}`,
+        kmL: Math.round(kmL * 100) / 100,
+      });
+    }
+  }
+  return points.slice(-count);
+}
+
+/**
+ * Retorna os últimos N meses com total gasto em combustível (para chart de barras).
+ */
+export function getMonthlyExpenses(fillups: FillUp[], vehicleId: string, months = 7): MonthlyExpensePoint[] {
+  const relevant = fillups.filter((f) => f.vehicleId === vehicleId && !f.noData && f.totalPaid > 0);
+
+  const map = new Map<string, number>();
+  for (const f of relevant) {
+    const d = new Date(f.date);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    map.set(key, (map.get(key) ?? 0) + f.totalPaid);
+  }
+
+  const sorted = Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+  const last = sorted.slice(-months);
+
+  const MONTHS_PT = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+  return last.map(([key, total]) => {
+    const [year, month] = key.split("-");
+    return {
+      label: `${MONTHS_PT[Number(month) - 1]}/${year.slice(2)}`,
+      total: Math.round(total * 100) / 100,
+    };
+  });
+}
+
 export interface DashboardStats {
   lastKmL: number | null;
   bestKmL: number | null;
