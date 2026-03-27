@@ -1,0 +1,227 @@
+"use client";
+
+import { useState } from "react";
+import { useAppStore } from "@/lib/store";
+import type { Vehicle } from "@/lib/types";
+import { getDashboardStats } from "@/lib/calculations";
+import { formatKmL } from "@/lib/utils";
+import { VehicleDialog } from "./VehicleDialog";
+import { DeleteVehicleDialog } from "./DeleteVehicleDialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Pencil, Trash2, Plus, Star, MoreHorizontal } from "lucide-react";
+
+export function VehicleList() {
+  const vehicles = useAppStore((s) => s.vehicles);
+  const fillups = useAppStore((s) => s.fillups);
+  const defaultVehicleId = useAppStore((s) => s.defaultVehicleId);
+  const setDefaultVehicleId = useAppStore((s) => s.setDefaultVehicleId);
+  const decimalSeparator = useAppStore((s) => s.settings.decimalSeparator);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [editingVehicle, setEditingVehicle] = useState<Vehicle | undefined>(undefined);
+  const [deletingVehicle, setDeletingVehicle] = useState<Vehicle | null>(null);
+
+  function handleEdit(vehicle: Vehicle) {
+    setEditingVehicle(vehicle);
+    setDialogOpen(true);
+  }
+
+  function handleNew() {
+    setEditingVehicle(undefined);
+    setDialogOpen(true);
+  }
+
+  function handleDeleteClick(vehicle: Vehicle) {
+    setDeletingVehicle(vehicle);
+    setDeleteOpen(true);
+  }
+
+  function handleSetDefault(vehicle: Vehicle) {
+    setDefaultVehicleId(defaultVehicleId === vehicle.id ? null : vehicle.id);
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Header responsivo */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Veículos</h1>
+          <p className="text-muted-foreground">Gerencie seus veículos</p>
+        </div>
+        <Button onClick={handleNew} className="hidden lg:flex self-start sm:self-auto">
+          <Plus className="h-4 w-4 mr-2" />
+          Novo Veículo
+        </Button>
+      </div>
+
+      {vehicles.length === 0 ? (
+        <div className="text-center py-12 text-muted-foreground">
+          Nenhum veículo cadastrado. Clique em &quot;Novo Veículo&quot; para começar.
+        </div>
+      ) : (
+        <>
+          {/* Tabela — visível em lg+ */}
+          <div className="hidden lg:block overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Apelido</TableHead>
+                  <TableHead>Marca</TableHead>
+                  <TableHead>Modelo</TableHead>
+                  <TableHead>Ano</TableHead>
+                  <TableHead>Abast.</TableHead>
+                  <TableHead>Último km/l</TableHead>
+                  <TableHead>Padrão</TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {vehicles.map((vehicle) => {
+                  const count = fillups.filter((f) => f.vehicleId === vehicle.id).length;
+                  const isDefault = defaultVehicleId === vehicle.id;
+                  const stats = getDashboardStats(fillups, vehicle.id);
+                  return (
+                    <TableRow key={vehicle.id}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          {vehicle.nickname}
+                          {isDefault && (
+                            <Badge variant="secondary" className="text-xs">padrão</Badge>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>{vehicle.brand}</TableCell>
+                      <TableCell>{vehicle.model ?? "—"}</TableCell>
+                      <TableCell>{vehicle.year}</TableCell>
+                      <TableCell>{count}</TableCell>
+                      <TableCell className="font-medium">
+                        {formatKmL(stats.lastKmL, decimalSeparator)}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleSetDefault(vehicle)}
+                          title={isDefault ? "Remover como padrão" : "Definir como padrão"}
+                        >
+                          <Star
+                            className="h-4 w-4"
+                            fill={isDefault ? "currentColor" : "none"}
+                          />
+                        </Button>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button variant="ghost" size="icon" onClick={() => handleEdit(vehicle)}>
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(vehicle)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Cards — visível em mobile e tablet */}
+          <div className="lg:hidden space-y-3">
+            {vehicles.map((vehicle) => {
+              const count = fillups.filter((f) => f.vehicleId === vehicle.id).length;
+              const isDefault = defaultVehicleId === vehicle.id;
+              const stats = getDashboardStats(fillups, vehicle.id);
+              return (
+                <Card key={vehicle.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-base">{vehicle.nickname}</span>
+                          {isDefault && (
+                            <Badge variant="secondary" className="text-xs">padrão</Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-0.5">
+                          {vehicle.brand}{vehicle.model ? ` ${vehicle.model}` : ""} • {vehicle.year}
+                        </p>
+                        <div className="flex items-center gap-3 mt-2 text-sm">
+                          <span className="text-muted-foreground">
+                            {count} abastecimento{count !== 1 ? "s" : ""}
+                          </span>
+                          {stats.lastKmL !== null && (
+                            <>
+                              <span className="text-muted-foreground">•</span>
+                              <span className="font-medium">
+                                {formatKmL(stats.lastKmL, decimalSeparator)}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="shrink-0">
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleEdit(vehicle)}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleSetDefault(vehicle)}>
+                            <Star className="mr-2 h-4 w-4" fill={isDefault ? "currentColor" : "none"} />
+                            {isDefault ? "Remover padrão" : "Definir como padrão"}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handleDeleteClick(vehicle)}>
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Excluir
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* FAB — visível em mobile e tablet */}
+      <Button
+        onClick={handleNew}
+        size="icon"
+        className="lg:hidden fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg"
+      >
+        <Plus className="h-6 w-6" />
+      </Button>
+
+      <VehicleDialog open={dialogOpen} onOpenChange={setDialogOpen} vehicle={editingVehicle} />
+      <DeleteVehicleDialog open={deleteOpen} onOpenChange={setDeleteOpen} vehicle={deletingVehicle} />
+    </div>
+  );
+}
