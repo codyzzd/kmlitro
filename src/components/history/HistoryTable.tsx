@@ -31,6 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Pencil, Trash2, Plus, Gauge, Droplets, Banknote, Fuel } from "lucide-react";
 
 export function HistoryTable() {
@@ -74,19 +75,23 @@ export function HistoryTable() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Abastecimentos</h1>
-          <p className="text-muted-foreground">Histórico de abastecimentos</p>
+    <div>
+      {/* Sticky page header */}
+      <div className="sticky top-0 z-10 bg-background pt-4 pb-3 mb-4 -mx-4 md:-mx-6 px-4 md:px-6">
+        <div className="flex items-center gap-2 mb-3">
+          <SidebarTrigger className="md:hidden" />
+          <h1 className="text-2xl font-bold leading-tight flex-1">Abastecimentos</h1>
+          <Button onClick={() => setNewOpen(true)} className="hidden lg:flex shrink-0">
+            <Plus className="h-4 w-4 mr-2" />
+            Novo Abastecimento
+          </Button>
         </div>
-        <Button onClick={() => setNewOpen(true)} className="hidden lg:flex self-start sm:self-auto">
-          <Plus className="h-4 w-4 mr-2" />
-          Novo Abastecimento
-        </Button>
+        <div className="flex items-center gap-3">
+          <HistoryFilters dateRange={dateRange} onDateRangeChange={setDateRange} />
+        </div>
       </div>
 
-      <HistoryFilters dateRange={dateRange} onDateRangeChange={setDateRange} />
+      <div className="space-y-4">
 
       {filtered.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
@@ -241,6 +246,8 @@ export function HistoryTable() {
           </div>
         </>
       )}
+
+      </div>{/* end space-y-4 */}
 
       {/* FAB — visível em mobile e tablet */}
       <Button

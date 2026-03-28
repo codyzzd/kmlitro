@@ -14,7 +14,8 @@
       "Bash(SRCDIR=\"/Users/codyzzd/Documents/dev/kmlitro_claude/src/app\")",
       "Bash(cp -r \"$SRCDIR/dashboard\" \"$APPDIR/dashboard\")",
       "Bash(cp -r \"$SRCDIR/history\" \"$APPDIR/history\")",
-      "Bash(cp -r \"$SRCDIR/vehicles\" \"$APPDIR/vehicles\")"
+      "Bash(cp -r \"$SRCDIR/vehicles\" \"$APPDIR/vehicles\")",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }

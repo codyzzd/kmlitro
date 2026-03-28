@@ -17,6 +17,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -37,6 +39,7 @@ const navItems = [
 export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { isMobile, setOpenMobile } = useSidebar();
   const supabase = createClient();
   const selectedVehicleId = useAppStore((s) => s.selectedVehicleId);
   const defaultVehicleId = useAppStore((s) => s.defaultVehicleId);
@@ -58,17 +61,20 @@ export function AppSidebar() {
   const displayEmail = settings.userEmail || "sem e-mail configurado";
 
   return (
-    <Sidebar>
-      <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2">
-          <Fuel className="h-5 w-5" />
-          <span className="font-semibold text-base">KmLitro</span>
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="p-2">
+        <div className="flex items-center justify-between gap-2 group-data-[collapsible=icon]:justify-center">
+          <div className="flex items-center gap-2 overflow-hidden group-data-[collapsible=icon]:hidden">
+            <Fuel className="h-5 w-5 shrink-0" />
+            <span className="font-semibold text-base truncate">KmLitro</span>
+          </div>
+          <SidebarTrigger />
         </div>
       </SidebarHeader>
 
       <SidebarContent>
         {/* Seletor de veículo global */}
-        <div className="px-2 py-1">
+        <div className="px-2 py-1 group-data-[collapsible=icon]:hidden">
           <p className="text-xs text-muted-foreground px-2 mb-1">Veículo ativo</p>
           <VehicleSelector
             value={selectedVehicleId}
@@ -77,7 +83,7 @@ export function AppSidebar() {
           />
         </div>
 
-        <SidebarSeparator />
+        <SidebarSeparator className="group-data-[collapsible=icon]:hidden" />
 
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
@@ -88,6 +94,8 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     isActive={pathname === item.href}
                     render={<Link href={item.href} />}
+                    tooltip={item.label}
+                    onClick={() => isMobile && setOpenMobile(false)}
                   >
                     <item.icon />
                     <span>{item.label}</span>

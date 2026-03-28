@@ -56,7 +56,7 @@ export function getLastOdometer(fillups: FillUp[], vehicleId: string): number | 
 }
 
 export interface KmLChartPoint {
-  label: string; // ex: "Abast. 1"
+  label: string; // ex: "Mar/26"
   kmL: number;
 }
 
@@ -72,12 +72,17 @@ export function getLastKmLPoints(fillups: FillUp[], vehicleId: string, count = 7
   const eligible = getEligibleFillUps(fillups, vehicleId);
   if (eligible.length < 2) return [];
 
+  const MONTHS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+
   const points: KmLChartPoint[] = [];
   for (let i = 1; i < eligible.length; i++) {
     const kmL = calculateKmPerLiter(eligible[i], eligible[i - 1]);
     if (kmL !== null) {
+      const d = new Date(eligible[i].date);
+      const day = String(d.getDate()).padStart(2, "0");
+      const label = `${day}/${MONTHS[d.getMonth()]}`;
       points.push({
-        label: `Abast. ${i}`,
+        label,
         kmL: Math.round(kmL * 100) / 100,
       });
     }

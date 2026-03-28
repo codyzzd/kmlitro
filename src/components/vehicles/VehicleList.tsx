@@ -25,6 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Pencil, Trash2, Plus, Star, MoreHorizontal } from "lucide-react";
 
 export function VehicleList() {
@@ -61,18 +62,21 @@ export function VehicleList() {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Header responsivo */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Veículos</h1>
-          <p className="text-muted-foreground">Gerencie seus veículos</p>
+    <div>
+      {/* Sticky page header */}
+      <div className="sticky top-0 z-10 bg-background pt-4 pb-3 mb-4 -mx-4 md:-mx-6 px-4 md:px-6">
+        <div className="flex items-center gap-2">
+          <SidebarTrigger className="md:hidden" />
+          <h1 className="text-2xl font-bold leading-tight flex-1">Veículos</h1>
+          <Button onClick={handleNew} className="hidden lg:flex">
+            <Plus className="h-4 w-4 mr-2" />
+            Novo Veículo
+          </Button>
         </div>
-        <Button onClick={handleNew} className="hidden lg:flex self-start sm:self-auto">
-          <Plus className="h-4 w-4 mr-2" />
-          Novo Veículo
-        </Button>
+        <p className="text-sm text-muted-foreground mt-0.5 pl-9 md:pl-0">Gerencie seus veículos</p>
       </div>
+
+      <div className="space-y-4">
 
       {vehicles.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
@@ -210,6 +214,8 @@ export function VehicleList() {
           </div>
         </>
       )}
+
+      </div>{/* end space-y-4 */}
 
       {/* FAB — visível em mobile e tablet */}
       <Button

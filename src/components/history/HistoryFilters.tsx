@@ -25,11 +25,11 @@ export function HistoryFilters({ dateRange, onDateRangeChange }: HistoryFiltersP
   })();
 
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-wrap gap-3 w-full sm:w-auto">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           className={cn(
-            "inline-flex h-9 w-64 items-center justify-start gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm font-normal ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "inline-flex h-9 w-full sm:w-64 items-center justify-start gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm font-normal ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             !dateRange?.from && "text-muted-foreground"
           )}
         >
