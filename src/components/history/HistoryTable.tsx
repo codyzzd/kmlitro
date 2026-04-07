@@ -31,7 +31,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Pencil, Trash2, Plus, Gauge, Droplets, Banknote, Fuel } from "lucide-react";
 
 export function HistoryTable() {
@@ -79,7 +78,6 @@ export function HistoryTable() {
       {/* Sticky page header */}
       <div className="sticky top-0 z-10 bg-background pt-4 pb-3 mb-4 -mx-4 md:-mx-6 px-4 md:px-6">
         <div className="flex items-center gap-2 mb-3">
-          <SidebarTrigger className="md:hidden" />
           <h1 className="text-2xl font-bold leading-tight flex-1">Abastecimentos</h1>
           <Button onClick={() => setNewOpen(true)} className="hidden lg:flex shrink-0">
             <Plus className="h-4 w-4 mr-2" />
@@ -152,7 +150,7 @@ export function HistoryTable() {
                       {fillup.noData ? (
                         <span className="text-muted-foreground text-xs">ignorado</span>
                       ) : (
-                        <span className={kmPerLiter !== null ? "font-medium" : "text-muted-foreground"}>
+                        <span className={kmPerLiter !== null ? "font-medium text-green-500" : "text-muted-foreground"}>
                           {formatKmL(kmPerLiter, decimalSeparator)}
                         </span>
                       )}
@@ -193,7 +191,7 @@ export function HistoryTable() {
                       </div>
 
                       {!fillup.noData && kmPerLiter !== null && (
-                        <p className="text-base font-semibold mt-1">
+                        <p className="text-base font-semibold mt-1 text-green-500">
                           {formatKmL(kmPerLiter, decimalSeparator)}
                         </p>
                       )}
@@ -253,7 +251,7 @@ export function HistoryTable() {
       <Button
         onClick={() => setNewOpen(true)}
         size="icon"
-        className="lg:hidden fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg"
+        className="lg:hidden fixed bottom-20 right-6 z-50 h-14 w-14 rounded-full shadow-lg"
       >
         <Plus className="h-6 w-6" />
       </Button>

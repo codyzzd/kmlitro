@@ -25,7 +25,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Pencil, Trash2, Plus, Star, MoreHorizontal } from "lucide-react";
 
 export function VehicleList() {
@@ -66,14 +65,13 @@ export function VehicleList() {
       {/* Sticky page header */}
       <div className="sticky top-0 z-10 bg-background pt-4 pb-3 mb-4 -mx-4 md:-mx-6 px-4 md:px-6">
         <div className="flex items-center gap-2">
-          <SidebarTrigger className="md:hidden" />
           <h1 className="text-2xl font-bold leading-tight flex-1">Veículos</h1>
           <Button onClick={handleNew} className="hidden lg:flex">
             <Plus className="h-4 w-4 mr-2" />
             Novo Veículo
           </Button>
         </div>
-        <p className="text-sm text-muted-foreground mt-0.5 pl-9 md:pl-0">Gerencie seus veículos</p>
+        <p className="text-sm text-muted-foreground mt-0.5">Gerencie seus veículos</p>
       </div>
 
       <div className="space-y-4">
@@ -221,7 +219,7 @@ export function VehicleList() {
       <Button
         onClick={handleNew}
         size="icon"
-        className="lg:hidden fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg"
+        className="lg:hidden fixed bottom-20 right-6 z-50 h-14 w-14 rounded-full shadow-lg"
       >
         <Plus className="h-6 w-6" />
       </Button>

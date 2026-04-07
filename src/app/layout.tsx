@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,9 +9,19 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
   title: "KmLitro",
   description: "Controle de abastecimento de veículos",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "KmLitro",
+  },
 };
 
 export default function RootLayout({

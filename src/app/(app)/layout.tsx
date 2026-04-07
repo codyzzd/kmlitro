@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { StoreInitializer } from "@/components/layout/StoreInitializer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function AppLayout({
@@ -21,12 +22,15 @@ export default async function AppLayout({
   return (
     <SidebarProvider>
       <StoreInitializer userId={user.id} />
-      <AppSidebar />
+      <div className="hidden md:contents">
+        <AppSidebar />
+      </div>
       <main className="flex flex-col flex-1 min-h-screen">
-        <div className="flex-1 px-4 md:px-6 pb-6">
+        <div className="flex-1 px-4 md:px-6 pb-24 md:pb-6">
           <div className="max-w-5xl mx-auto w-full">{children}</div>
         </div>
       </main>
+      <BottomNav />
     </SidebarProvider>
   );
 }
