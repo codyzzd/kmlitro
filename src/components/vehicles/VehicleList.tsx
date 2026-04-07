@@ -116,7 +116,7 @@ export function VehicleList() {
                       <TableCell>{vehicle.model ?? "—"}</TableCell>
                       <TableCell>{vehicle.year}</TableCell>
                       <TableCell>{count}</TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium text-green-500">
                         {formatKmL(stats.lastKmL, decimalSeparator)}
                       </TableCell>
                       <TableCell>
@@ -176,7 +176,7 @@ export function VehicleList() {
                           {stats.lastKmL !== null && (
                             <>
                               <span className="text-muted-foreground">•</span>
-                              <span className="font-medium">
+                              <span className="font-medium text-green-500">
                                 {formatKmL(stats.lastKmL, decimalSeparator)}
                               </span>
                             </>
