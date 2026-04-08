@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 interface VehicleSelectorProps {
   value: string | null;
@@ -28,6 +29,8 @@ export function VehicleSelector({
     : null;
 
   return (
+    <div className="space-y-1">
+      <Label>Veículo</Label>
     <Select value={value ?? ""} onValueChange={(v) => v && onChange(v)}>
       <SelectTrigger>
         {displayLabel ? (
@@ -50,5 +53,6 @@ export function VehicleSelector({
         )}
       </SelectContent>
     </Select>
+    </div>
   );
 }

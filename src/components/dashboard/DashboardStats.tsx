@@ -7,6 +7,7 @@ import { formatKmL } from "@/lib/utils";
 import { KpiCard } from "./KpiCard";
 import { KmLChart } from "./KmLChart";
 import { MonthlyExpenseChart } from "./MonthlyExpenseChart";
+import { VehicleSelector } from "@/components/shared/VehicleSelector";
 import Link from "next/link";
 import { TrendingUp, TrendingDown, Gauge, BarChart2 } from "lucide-react";
 
@@ -15,6 +16,7 @@ export function DashboardStats() {
   const decimalSeparator = useAppStore((s) => s.settings.decimalSeparator);
   const { selectedVehicle, selectedVehicleId, vehicles } = useSelectedVehicle();
 
+  const setSelectedVehicleId = useAppStore((s) => s.setSelectedVehicleId);
   const stats = selectedVehicleId ? getDashboardStats(fillups, selectedVehicleId) : null;
   const hasData = stats && (stats.lastKmL !== null || stats.bestKmL !== null);
   const kmLPoints = selectedVehicleId ? getLastKmLPoints(fillups, selectedVehicleId, 7) : [];
@@ -24,6 +26,15 @@ export function DashboardStats() {
 
   return (
     <div className="space-y-6">
+      {vehicles.length > 0 && (
+        <div className="md:hidden">
+          <VehicleSelector
+            value={selectedVehicleId}
+            onChange={setSelectedVehicleId}
+          />
+        </div>
+      )}
+
       {vehicles.length === 0 && (
         <p className="text-muted-foreground">
           Nenhum veículo cadastrado. Vá em{" "}
@@ -50,12 +61,10 @@ export function DashboardStats() {
       {selectedVehicle && (
         <>
           <div>
-            <h2 className="text-lg font-semibold mb-4">{selectedVehicle.nickname}</h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <KpiCard
                 title="Último km/l"
                 value={fmt(stats?.lastKmL ?? null)}
-                description="Abastecimento mais recente"
                 icon={Gauge}
                 accent="default"
                 index={0}
@@ -63,7 +72,6 @@ export function DashboardStats() {
               <KpiCard
                 title="Melhor km/l"
                 value={fmt(stats?.bestKmL ?? null)}
-                description="Maior eficiência registrada"
                 icon={TrendingUp}
                 accent="green"
                 index={1}
@@ -71,7 +79,6 @@ export function DashboardStats() {
               <KpiCard
                 title="Pior km/l"
                 value={fmt(stats?.worstKmL ?? null)}
-                description="Menor eficiência registrada"
                 icon={TrendingDown}
                 accent="red"
                 index={2}
@@ -79,7 +86,6 @@ export function DashboardStats() {
               <KpiCard
                 title="Média km/l"
                 value={fmt(stats?.averageKmL ?? null)}
-                description="Média histórica"
                 icon={BarChart2}
                 accent="yellow"
                 index={3}
