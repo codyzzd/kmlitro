@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Fuel, Car, Settings } from "lucide-react";
@@ -14,6 +15,12 @@ const items = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
+
+  // Limpa o estado pendente assim que a navegação conclui
+  useEffect(() => {
+    setPendingHref(null);
+  }, [pathname]);
 
   return (
     <nav
@@ -22,11 +29,12 @@ export function BottomNav() {
     >
       <div className="flex">
         {items.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = pathname === item.href || pendingHref === item.href;
           return (
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => setPendingHref(item.href)}
               className={cn(
                 "flex flex-1 flex-col items-center gap-1 py-2 text-[11px] font-medium transition-colors",
                 isActive
