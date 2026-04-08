@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/layout/AppSidebar";
 import { StoreInitializer } from "@/components/layout/StoreInitializer";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { createClient } from "@/utils/supabase/server";
+import { StoreLoadingGuard } from "@/components/layout/StoreLoadingGuard";
 
 export default async function AppLayout({
   children,
@@ -30,7 +31,9 @@ export default async function AppLayout({
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="flex-1 px-4 md:px-6 pb-24 md:pb-6">
-          <div className="max-w-5xl mx-auto w-full">{children}</div>
+          <div className="max-w-5xl mx-auto w-full">
+            <StoreLoadingGuard>{children}</StoreLoadingGuard>
+          </div>
         </div>
       </main>
       <BottomNav />

@@ -8,7 +8,7 @@ import { formatKmL } from "@/lib/utils";
 import { VehicleDialog } from "./VehicleDialog";
 import { DeleteVehicleDialog } from "./DeleteVehicleDialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -63,7 +63,7 @@ export function VehicleList() {
   return (
     <div>
       {/* Sticky page header */}
-      <div className="sticky top-0 z-10 bg-background pt-4 pb-3 mb-4 -mx-4 md:-mx-6 px-4 md:px-6">
+      <div className="sticky top-0 z-10 bg-background pt-4 pb-4 mb-6 -mx-4 md:-mx-6 px-4 md:px-6">
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold leading-tight flex-1">Veículos</h1>
           <Button onClick={handleNew} className="hidden lg:flex">
@@ -83,7 +83,7 @@ export function VehicleList() {
       ) : (
         <>
           {/* Tabela — visível em lg+ */}
-          <div className="hidden lg:block overflow-x-auto">
+          <div className="hidden lg:block overflow-x-auto animate-fade-in">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -150,38 +150,28 @@ export function VehicleList() {
           </div>
 
           {/* Cards — visível em mobile e tablet */}
-          <div className="lg:hidden space-y-3">
-            {vehicles.map((vehicle) => {
+          <div className="lg:hidden space-y-4">
+            {vehicles.map((vehicle, index) => {
               const count = fillups.filter((f) => f.vehicleId === vehicle.id).length;
               const isDefault = defaultVehicleId === vehicle.id;
               const stats = getDashboardStats(fillups, vehicle.id);
               return (
-                <Card key={vehicle.id}>
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between gap-2">
+                <Card key={vehicle.id} className="animate-fade-up" style={{ animationDelay: `${Math.min(index, 5) * 80}ms` }}>
+                  <CardContent>
+                    <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-semibold text-base">{vehicle.nickname}</span>
+                        {/* Primário: apelido */}
+                        <div className="flex items-center gap-2 flex-wrap mb-1">
+                          <span className="text-lg font-bold leading-tight">{vehicle.nickname}</span>
                           {isDefault && (
-                            <Badge variant="secondary" className="text-xs">padrão</Badge>
+                            <Badge variant="secondary" className="text-xs shrink-0">padrão</Badge>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground mt-0.5">
+
+                        {/* Secundário: marca + modelo + ano */}
+                        <p className="text-sm text-muted-foreground">
                           {vehicle.brand}{vehicle.model ? ` ${vehicle.model}` : ""} • {vehicle.year}
                         </p>
-                        <div className="flex items-center gap-3 mt-2 text-sm">
-                          <span className="text-muted-foreground">
-                            {count} abastecimento{count !== 1 ? "s" : ""}
-                          </span>
-                          {stats.lastKmL !== null && (
-                            <>
-                              <span className="text-muted-foreground">•</span>
-                              <span className="font-medium text-green-500">
-                                {formatKmL(stats.lastKmL, decimalSeparator)}
-                              </span>
-                            </>
-                          )}
-                        </div>
                       </div>
 
                       <DropdownMenu>
@@ -206,6 +196,20 @@ export function VehicleList() {
                       </DropdownMenu>
                     </div>
                   </CardContent>
+
+                  {/* Terciário: estatísticas no footer nativo */}
+                  <CardFooter className="gap-3 text-sm">
+                    <span className="text-muted-foreground">{count} abastecimento{count !== 1 ? "s" : ""}</span>
+                    {stats.lastKmL !== null && (
+                      <>
+                        <span className="text-muted-foreground">·</span>
+                        <span className="font-semibold text-yellow-600 dark:text-yellow-400">
+                          {formatKmL(stats.lastKmL, decimalSeparator)}
+                          <span className="font-normal text-muted-foreground text-xs ml-1">km/l</span>
+                        </span>
+                      </>
+                    )}
+                  </CardFooter>
                 </Card>
               );
             })}
@@ -218,8 +222,8 @@ export function VehicleList() {
       {/* FAB — visível em mobile e tablet */}
       <Button
         onClick={handleNew}
-        className="lg:hidden fixed left-4 right-4 z-50 h-14 rounded-full shadow-lg gap-2 text-base font-semibold"
-        style={{ bottom: "calc(4.5rem + env(safe-area-inset-bottom))" }}
+        className="lg:hidden fixed left-0 right-0 z-50 py-6 shadow-lg gap-2 text-base font-semibold"
+        style={{ bottom: "calc(3.5rem + env(safe-area-inset-bottom))" }}
       >
         <Plus className="h-5 w-5" />
         Novo Veículo

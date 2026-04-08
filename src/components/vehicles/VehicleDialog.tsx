@@ -133,12 +133,12 @@ export function VehicleDialog({ open, onOpenChange, vehicle }: VehicleDialogProp
                 </FormItem>
               )}
             />
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <div className="flex gap-3 pt-2">
+              <Button type="button" variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
                 Cancelar
               </Button>
-              <Button type="submit">{vehicle ? "Salvar" : "Criar"}</Button>
-            </DialogFooter>
+              <Button type="submit" className="flex-1">{vehicle ? "Salvar" : "Criar"}</Button>
+            </div>
           </form>
         </Form>
       </DialogContent>

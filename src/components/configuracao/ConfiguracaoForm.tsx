@@ -74,10 +74,10 @@ export function ConfiguracaoForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-lg">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-lg">
 
         {/* Perfil */}
-        <div className="space-y-4">
+        <div className="space-y-4 animate-fade-up" style={{ animationDelay: "0ms" }}>
           <div>
             <h2 className="text-base font-semibold">Perfil</h2>
             <p className="text-sm text-muted-foreground">
@@ -116,7 +116,7 @@ export function ConfiguracaoForm() {
         <Separator />
 
         {/* Aparência */}
-        <div className="space-y-4">
+        <div className="space-y-4 animate-fade-up" style={{ animationDelay: "100ms" }}>
           <div>
             <h2 className="text-base font-semibold">Aparência</h2>
             <p className="text-sm text-muted-foreground">
@@ -158,7 +158,7 @@ export function ConfiguracaoForm() {
         <Separator />
 
         {/* Formato de números */}
-        <div className="space-y-4">
+        <div className="space-y-4 animate-fade-up" style={{ animationDelay: "200ms" }}>
           <div>
             <h2 className="text-base font-semibold">Formato de números</h2>
             <p className="text-sm text-muted-foreground">

@@ -36,9 +36,10 @@ type LastEdited = "price" | "total" | null;
 
 interface FillUpFormProps {
   onSuccess?: () => void;
+  onCancel?: () => void;
 }
 
-export function FillUpForm({ onSuccess }: FillUpFormProps = {}) {
+export function FillUpForm({ onSuccess, onCancel }: FillUpFormProps = {}) {
   const addFillUp = useAppStore((s) => s.addFillUp);
   const fillups = useAppStore((s) => s.fillups);
   const decimalSeparator = useAppStore((s) => s.settings.decimalSeparator);
@@ -371,9 +372,20 @@ export function FillUpForm({ onSuccess }: FillUpFormProps = {}) {
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Registrar Abastecimento
-        </Button>
+        {onCancel ? (
+          <div className="flex gap-3">
+            <Button type="button" variant="outline" className="flex-1" onClick={onCancel}>
+              Cancelar
+            </Button>
+            <Button type="submit" className="flex-1">
+              Registrar
+            </Button>
+          </div>
+        ) : (
+          <Button type="submit" className="w-full">
+            Registrar Abastecimento
+          </Button>
+        )}
       </form>
     </Form>
   );

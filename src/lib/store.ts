@@ -91,7 +91,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
   selectedVehicleId: null,
   defaultVehicleId: null,
   settings: defaultSettings,
-  isLoading: false,
+  isLoading: true,
   userId: null,
 
   // ----------------------------------------------------------------

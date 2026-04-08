@@ -23,7 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -76,8 +76,8 @@ export function HistoryTable() {
   return (
     <div>
       {/* Sticky page header */}
-      <div className="sticky top-0 z-10 bg-background pt-4 pb-3 mb-4 -mx-4 md:-mx-6 px-4 md:px-6">
-        <div className="flex items-center gap-2 mb-3">
+      <div className="sticky top-0 z-10 bg-background pt-4 pb-4 mb-6 -mx-4 md:-mx-6 px-4 md:px-6">
+        <div className="flex items-center gap-2 mb-2">
           <h1 className="text-2xl font-bold leading-tight flex-1">Abastecimentos</h1>
           <Button onClick={() => setNewOpen(true)} className="hidden lg:flex shrink-0">
             <Plus className="h-4 w-4 mr-2" />
@@ -98,7 +98,7 @@ export function HistoryTable() {
       ) : (
         <>
           {/* Tabela — visível em lg+ */}
-          <div className="hidden lg:block overflow-x-auto">
+          <div className="hidden lg:block overflow-x-auto animate-fade-in">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -175,70 +175,74 @@ export function HistoryTable() {
           </div>
 
           {/* Cards — visível em mobile e tablet */}
-          <div className="lg:hidden space-y-3">
-            {filtered.map(({ fillup, kmPerLiter }) => (
-              <Card key={fillup.id}>
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-medium">
-                          {format(new Date(fillup.date), "dd/MM/yyyy HH:mm", { locale: ptBR })}
-                        </span>
-                        {fillup.noData && (
-                          <Badge variant="secondary" className="text-xs">Sem dados</Badge>
-                        )}
-                      </div>
-
-                      {!fillup.noData && kmPerLiter !== null && (
-                        <p className="text-base font-semibold mt-1 text-green-500">
-                          {formatKmL(kmPerLiter, decimalSeparator)}
-                        </p>
-                      )}
-                      {!fillup.noData && kmPerLiter === null && (
-                        <p className="text-sm text-muted-foreground mt-1">km/l não calculado</p>
-                      )}
-
-                      {!fillup.noData && (
-                        <div className="mt-2 space-y-1 text-sm text-muted-foreground">
-                          <p className="flex items-center gap-1.5">
-                            <Gauge className="h-3.5 w-3.5 shrink-0" />
-                            <span className="text-foreground">{formatNumber(fillup.odometer, decimalSeparator)} km</span>
-                          </p>
-                          <p className="flex items-center gap-1.5">
-                            <Droplets className="h-3.5 w-3.5 shrink-0" />
-                            <span className="text-foreground">
-                              {formatNumber(fillup.liters, decimalSeparator, { minimumFractionDigits: 3, maximumFractionDigits: 3 })} L
-                            </span>
-                            <span className="text-muted-foreground">•</span>
-                            <span>R$ {formatNumber(fillup.pricePerLiter, decimalSeparator, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}/L</span>
-                          </p>
-                          <p className="flex items-center gap-1.5">
-                            <Banknote className="h-3.5 w-3.5 shrink-0" />
-                            <span className="text-foreground font-medium">R$ {formatNumber(fillup.totalPaid, decimalSeparator, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                          </p>
-                          <p className="flex items-center gap-1.5">
-                            <Fuel className="h-3.5 w-3.5 shrink-0" />
-                            <span>{FUEL_TYPE_LABELS[fillup.fuelType]}</span>
-                          </p>
-                        </div>
-                      )}
-
-                      {fillup.notes && (
-                        <p className="text-xs text-muted-foreground mt-1 italic">{fillup.notes}</p>
-                      )}
-                    </div>
-
-                    <div className="flex gap-1 shrink-0">
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(fillup)}>
-                        <Pencil className="h-4 w-4" />
+          <div className="lg:hidden space-y-4">
+            {filtered.map(({ fillup, kmPerLiter }, index) => (
+              <Card key={fillup.id} className="animate-fade-up" style={{ animationDelay: `${Math.min(index, 5) * 80}ms` }}>
+                <CardContent>
+                  {/* Linha 1: data + ações */}
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="text-xs text-muted-foreground">
+                      {format(new Date(fillup.date), "dd/MM/yyyy • HH:mm", { locale: ptBR })}
+                    </span>
+                    <div className="flex gap-1 shrink-0 -mr-1">
+                      <Button variant="ghost" size="icon-sm" onClick={() => handleEdit(fillup)}>
+                        <Pencil className="h-3.5 w-3.5" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(fillup)}>
-                        <Trash2 className="h-4 w-4" />
+                      <Button variant="ghost" size="icon-sm" onClick={() => handleDeleteClick(fillup)}>
+                        <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
                   </div>
+
+                  {fillup.noData ? (
+                    <Badge variant="secondary">Sem dados registrados</Badge>
+                  ) : (
+                    <>
+                      {/* Linha 2: km/l — métrica principal */}
+                      <div className="flex items-baseline gap-1.5 mb-1">
+                        {kmPerLiter !== null ? (
+                          <>
+                            <span className="text-2xl font-bold leading-none text-yellow-600 dark:text-yellow-400">
+                              {formatKmL(kmPerLiter, decimalSeparator)}
+                            </span>
+                            <span className="text-xs text-muted-foreground">km/l</span>
+                          </>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">km/l não calculado</span>
+                        )}
+                      </div>
+
+                      {/* Linha 3: total pago — métrica secundária */}
+                      <p className="text-base font-semibold">
+                        R$ {formatNumber(fillup.totalPaid, decimalSeparator, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </p>
+                    </>
+                  )}
                 </CardContent>
+
+                {!fillup.noData && (
+                  <CardFooter className="flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Gauge className="h-3 w-3 shrink-0" />
+                      {formatNumber(fillup.odometer, decimalSeparator)} km
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Droplets className="h-3 w-3 shrink-0" />
+                      {formatNumber(fillup.liters, decimalSeparator, { minimumFractionDigits: 3, maximumFractionDigits: 3 })} L
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Banknote className="h-3 w-3 shrink-0" />
+                      R$ {formatNumber(fillup.pricePerLiter, decimalSeparator, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}/L
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Fuel className="h-3 w-3 shrink-0" />
+                      {FUEL_TYPE_LABELS[fillup.fuelType]}
+                    </span>
+                    {fillup.notes && (
+                      <span className="w-full italic">{fillup.notes}</span>
+                    )}
+                  </CardFooter>
+                )}
               </Card>
             ))}
           </div>
@@ -250,8 +254,8 @@ export function HistoryTable() {
       {/* FAB — visível em mobile e tablet */}
       <Button
         onClick={() => setNewOpen(true)}
-        className="lg:hidden fixed left-4 right-4 z-50 h-14 rounded-full shadow-lg gap-2 text-base font-semibold"
-        style={{ bottom: "calc(4.5rem + env(safe-area-inset-bottom))" }}
+        className="lg:hidden fixed left-0 right-0 z-50 py-6 shadow-lg gap-2 text-base font-semibold"
+        style={{ bottom: "calc(3.5rem + env(safe-area-inset-bottom))" }}
       >
         <Plus className="h-5 w-5" />
         Novo Abastecimento
@@ -262,7 +266,7 @@ export function HistoryTable() {
           <DialogHeader>
             <DialogTitle>Novo Abastecimento</DialogTitle>
           </DialogHeader>
-          <FillUpForm onSuccess={() => setNewOpen(false)} />
+          <FillUpForm onSuccess={() => setNewOpen(false)} onCancel={() => setNewOpen(false)} />
         </DialogContent>
       </Dialog>
 

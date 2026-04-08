@@ -10,6 +10,7 @@ interface KpiCardProps {
   description?: string;
   icon?: LucideIcon;
   accent?: Accent;
+  index?: number;
 }
 
 const accentStyles: Record<Accent, { icon: string; value: string }> = {
@@ -19,11 +20,14 @@ const accentStyles: Record<Accent, { icon: string; value: string }> = {
   default: { icon: "text-muted-foreground", value: "" },
 };
 
-export function KpiCard({ title, value, description, icon: Icon, accent = "default" }: KpiCardProps) {
+export function KpiCard({ title, value, description, icon: Icon, accent = "default", index = 0 }: KpiCardProps) {
   const styles = accentStyles[accent];
 
   return (
-    <Card>
+    <Card
+      className="animate-fade-up"
+      style={{ animationDelay: `${index * 80}ms` }}
+    >
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>

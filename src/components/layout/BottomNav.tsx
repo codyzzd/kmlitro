@@ -17,7 +17,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur border-t"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="flex">
@@ -28,9 +28,9 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-1 flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors",
+                "flex flex-1 flex-col items-center gap-1 py-2 text-[11px] font-medium transition-colors",
                 isActive
-                  ? "text-primary"
+                  ? "text-yellow-600 dark:text-yellow-400"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >

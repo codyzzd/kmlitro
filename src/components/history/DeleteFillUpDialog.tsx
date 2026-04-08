@@ -44,14 +44,14 @@ export function DeleteFillUpDialog({ open, onOpenChange, fillUp }: DeleteFillUpD
             <strong>{dateLabel}</strong>? Esta ação não pode ser desfeita.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        <div className="flex gap-3 pt-2">
+          <Button variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button variant="destructive" onClick={handleDelete}>
+          <Button variant="destructive" className="flex-1" onClick={handleDelete}>
             Excluir
           </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -335,11 +335,11 @@ export function EditFillUpDialog({ open, onOpenChange, fillUp }: EditFillUpDialo
               )}
             />
 
-            <div className="flex justify-end gap-2 pt-2">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <div className="flex gap-3 pt-2">
+              <Button type="button" variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
                 Cancelar
               </Button>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit" className="flex-1">Salvar</Button>
             </div>
           </form>
         </Form>
