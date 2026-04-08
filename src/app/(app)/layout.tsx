@@ -25,7 +25,10 @@ export default async function AppLayout({
       <div className="hidden md:contents">
         <AppSidebar />
       </div>
-      <main className="flex flex-col flex-1 min-h-screen">
+      <main
+        className="flex flex-col flex-1 min-h-screen"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      >
         <div className="flex-1 px-4 md:px-6 pb-24 md:pb-6">
           <div className="max-w-5xl mx-auto w-full">{children}</div>
         </div>
