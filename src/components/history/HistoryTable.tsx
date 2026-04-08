@@ -250,10 +250,11 @@ export function HistoryTable() {
       {/* FAB — visível em mobile e tablet */}
       <Button
         onClick={() => setNewOpen(true)}
-        size="icon"
-        className="lg:hidden fixed bottom-20 right-6 z-50 h-14 w-14 rounded-full shadow-lg"
+        className="lg:hidden fixed left-4 right-4 z-50 h-14 rounded-full shadow-lg gap-2 text-base font-semibold"
+        style={{ bottom: "calc(4.5rem + env(safe-area-inset-bottom))" }}
       >
-        <Plus className="h-6 w-6" />
+        <Plus className="h-5 w-5" />
+        Novo Abastecimento
       </Button>
 
       <Dialog open={newOpen} onOpenChange={setNewOpen}>
