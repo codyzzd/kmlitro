@@ -9,6 +9,21 @@ interface KmLChartProps {
   decimalSeparator: "," | ".";
 }
 
+function KmLTooltip({ active, payload, label, fmt }: {
+  active?: boolean;
+  payload?: { value: number }[];
+  label?: string;
+  fmt: (v: number) => string;
+}) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-popover border border-border shadow-md px-3 py-2 text-xs">
+      <p className="text-muted-foreground mb-1">{label}</p>
+      <p className="font-semibold">{fmt(payload[0].value)} km/l</p>
+    </div>
+  );
+}
+
 export function KmLChart({ data, decimalSeparator }: KmLChartProps) {
   if (data.length < 2) return null;
 
@@ -36,16 +51,7 @@ export function KmLChart({ data, decimalSeparator }: KmLChartProps) {
               className="fill-muted-foreground"
               tickFormatter={fmt}
             />
-            <Tooltip
-              formatter={(v) => [`${fmt(Number(v))} km/l`, "Eficiência"]}
-              contentStyle={{
-                background: "hsl(var(--popover))",
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "8px",
-                fontSize: 12,
-              }}
-              labelStyle={{ color: "hsl(var(--muted-foreground))" }}
-            />
+            <Tooltip content={(props) => <KmLTooltip {...props} fmt={fmt} />} />
             <Line
               type="monotone"
               dataKey="kmL"

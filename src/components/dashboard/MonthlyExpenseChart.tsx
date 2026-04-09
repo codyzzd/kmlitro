@@ -9,6 +9,21 @@ interface MonthlyExpenseChartProps {
   decimalSeparator: "," | ".";
 }
 
+function ExpenseTooltip({ active, payload, label, fmt }: {
+  active?: boolean;
+  payload?: { value: number }[];
+  label?: string;
+  fmt: (v: number) => string;
+}) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-popover border border-border shadow-md px-3 py-2 text-xs">
+      <p className="text-muted-foreground mb-1">{label}</p>
+      <p className="font-semibold">{fmt(payload[0].value)}</p>
+    </div>
+  );
+}
+
 export function MonthlyExpenseChart({ data, decimalSeparator }: MonthlyExpenseChartProps) {
   if (data.length === 0) return null;
 
@@ -36,16 +51,7 @@ export function MonthlyExpenseChart({ data, decimalSeparator }: MonthlyExpenseCh
               className="fill-muted-foreground"
               tickFormatter={(v) => `R$${v}`}
             />
-            <Tooltip
-              formatter={(v) => [fmt(Number(v)), "Total gasto"]}
-              contentStyle={{
-                background: "hsl(var(--popover))",
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "8px",
-                fontSize: 12,
-              }}
-              labelStyle={{ color: "hsl(var(--muted-foreground))" }}
-            />
+            <Tooltip content={(props) => <ExpenseTooltip {...props} fmt={fmt} />} />
             <Bar
               dataKey="total"
               fill="#3b82f6"

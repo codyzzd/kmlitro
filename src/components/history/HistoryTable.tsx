@@ -150,7 +150,7 @@ export function HistoryTable() {
                       {fillup.noData ? (
                         <span className="text-muted-foreground text-xs">ignorado</span>
                       ) : (
-                        <span className={kmPerLiter !== null ? "font-medium text-green-500" : "text-muted-foreground"}>
+                        <span className={kmPerLiter !== null ? "font-medium text-yellow-600 dark:text-yellow-400" : "text-muted-foreground"}>
                           {formatKmL(kmPerLiter, decimalSeparator)}
                         </span>
                       )}
@@ -205,7 +205,6 @@ export function HistoryTable() {
                             <span className="text-2xl font-bold leading-none text-yellow-600 dark:text-yellow-400">
                               {formatKmL(kmPerLiter, decimalSeparator)}
                             </span>
-                            <span className="text-xs text-muted-foreground">km/l</span>
                           </>
                         ) : (
                           <span className="text-sm text-muted-foreground">km/l não calculado</span>
