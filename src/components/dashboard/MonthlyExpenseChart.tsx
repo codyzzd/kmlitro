@@ -11,15 +11,16 @@ interface MonthlyExpenseChartProps {
 
 function ExpenseTooltip({ active, payload, label, fmt }: {
   active?: boolean;
-  payload?: { value: number }[];
-  label?: string;
+  payload?: readonly { value?: string | number | readonly (string | number)[] }[];
+  label?: string | number;
   fmt: (v: number) => string;
 }) {
   if (!active || !payload?.length) return null;
+  const v = Number(payload[0].value);
   return (
     <div className="bg-popover border border-border shadow-md px-3 py-2 text-xs">
       <p className="text-muted-foreground mb-1">{label}</p>
-      <p className="font-semibold">{fmt(payload[0].value)}</p>
+      <p className="font-semibold">{fmt(v)}</p>
     </div>
   );
 }
