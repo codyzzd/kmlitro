@@ -108,7 +108,6 @@ export function HistoryTable() {
                   <TableHead>Preço/L</TableHead>
                   <TableHead>Total</TableHead>
                   <TableHead>Combustível</TableHead>
-                  <TableHead>km/l</TableHead>
                   <TableHead>Obs</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
@@ -144,15 +143,6 @@ export function HistoryTable() {
                         <Badge variant="secondary">Sem dados</Badge>
                       ) : (
                         FUEL_TYPE_LABELS[fillup.fuelType]
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {fillup.noData ? (
-                        <span className="text-muted-foreground text-xs">ignorado</span>
-                      ) : (
-                        <span className={kmPerLiter !== null ? "font-medium text-yellow-600 dark:text-yellow-400" : "text-muted-foreground"}>
-                          {formatKmL(kmPerLiter, decimalSeparator)}
-                        </span>
                       )}
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm max-w-32 truncate">
